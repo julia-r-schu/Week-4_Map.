@@ -1,0 +1,68 @@
+<!--Amazon Q Prompt: Can you create the outline for a leaflet map that uses GeoJson methods to create circle markers and filters - please include everything I need to run te program -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leaftlet Map of PPR Program Sites Using GeoJson</title>
+  <!--Leaflet stylesheet-->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+</head>
+
+<body>
+
+  <!--Map div and dimensions, I kept them the same-->
+  <div id="map" style="width: 600px; height: 400px"></div>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+  <!--I added Parks and Recreation Program Sites data to the map, uses Global Switches from Leaftlet Library-->
+  <script src="PPR_Program_Sites.geojson"></script>
+
+  
+
+  <script>
+
+    //I adjusted the coordinates to center Phildelphia and include all of the PPR Sites, I created the map variable. 
+    var map = L.map('map').setView([40, -75.165222], 10.5);
+
+    //I added Mapbox Basemap by creating an account and getting a free access token. I used a dark them so it was easier to see the green circle marker. 
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/dark-v10', 
+    accessToken: 'pk.eyJ1IjoianVsaWE0MjIiLCJhIjoiY2xzZHZxNmw4MTUyMzJrcWw1N2hxbjhnZCJ9.Ps5fnTU_3L8GJB5QBvXm6Q'
+  }).addTo(map);
+
+
+    //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    //}).addTo(map);
+
+    //I inputted my PPR Sites Geojson data into the map by using the variable called sites from the other data set, I used the Creation GeoJson code from Leaflet Library. 
+    var pprSites = L.geoJson(sites, {
+        pointToLayer: function(feature,latlng) {
+              console.log(feature.properties)
+              return L.circleMarker(latlng, {
+                radius: 3, 
+                color: 'green', //I changed the color to green
+              });   
+          },
+
+
+
+      //I changed the filter to only filter Frank Glavin Playground. This refers to the filter option under the GeoJson section of Leaflet Library
+      filter: function(feature, layer){
+          if(feature.properties.PARK_NAME === "Frank Glavin Playground"){
+              return true
+                    };
+        
+      }
+    
+      
+  }
+).addTo(map);
+
+
+  </script>
+
+</body>
+</html>
